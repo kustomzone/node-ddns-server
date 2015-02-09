@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+var dyndns = require('../index');
+
+dyndns.start({
+  http_host: '0.0.0.0'
+, http_port: 65080
+, dns_port: 65053
+});
+
