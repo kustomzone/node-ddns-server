@@ -1,8 +1,8 @@
-
-var dyndns = require('./lib/dyndns'),
-    dnsserver = require('./lib/dnsserver'),
-    httpserver = require('./lib/httpserver'),
-    domainstore = require('./lib/domainstore');
+var dyndns = require('./lib/dyndns')
+  , dnsserver = require('./lib/dnsserver')
+  , httpserver = require('./lib/httpserver')
+  , domainstore = require('./lib/domainstore')
+  ; 
 
 /**
  * Starting Dynamic DNS Server and Update HTTP Server.
@@ -31,14 +31,3 @@ exports.DynHttpServer = httpserver.DynHttpServer;
  * Domain Store.
  */
 exports.DomainStore = domainstore.DomainStore;
-
-/**
- * Redis Domain Store.
- */
-exports.RedisDomainStore = domainstore.RedisDomainStore;
-
-/**
- * SQLite Domain Store.
- */
-exports.SQLiteDomainStore = domainstore.SQLiteDomainStore;
-

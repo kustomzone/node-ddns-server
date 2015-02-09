@@ -2,9 +2,10 @@
  * @module routes/nic
  */
 
-var dns = require('native-dns'),
-    url = require('url'),
-    store;
+var dns = require('native-dns')
+  , url = require('url')
+  , store
+  ;
 
 /**
  * Set domain store.
@@ -24,8 +25,10 @@ exports.setDomainStore = setDomainStore;
  * @param req {Request} HTTP request
  * @param res {Response} HTTP request
  */
-exports.update = function(req, res) {
-  var query;
+exports.update = function (req, res) {
+  var query
+    , domain
+    ;
 
   query = url.parse(req.url, true).query;
 
@@ -35,11 +38,13 @@ exports.update = function(req, res) {
     return;
   }
 
-  var domain = dns.A({
-    name : query.hostname,
-    address : query.myip,
-    ttl : 600,
-  });
+  // dns.consts.QTYPE_TO_NAME[question.type]
+  domain = {
+    name : query.key || query.name || query.hostname
+  , type: query.type || 'A' //dns.consts.NAME_TO_QTYPE[query.type || 'A'],
+  , values : [ query.value || query.myip ]
+  , ttl : 300
+  };
 
   store.registerAnswer(domain, function(err) {
 
@@ -55,5 +60,4 @@ exports.update = function(req, res) {
       res.end('good ' + query.myip);
     }
   });
-}
-
+};
