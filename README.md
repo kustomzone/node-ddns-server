@@ -6,33 +6,43 @@ A Dynamic DNS (DDNS / DynDNS) server written in io.js / node.js.
 Start DNS Server
 
 ```bash
-node node-dyndns/bin/node-dyndns
+git clone git@github.com:Daplie/node-ddns.git
+pushd node-ddns
+
+echo '{}' > dns.db.json
+
+# node bin/node-dyndns <<dns port>> <<https port>>
+node bin/node-dyndns 65053 65443
 ```
 
-After that, you will find DNS Server on port 53, and Update HTTP Server on port 80. 
+Test that it works
 
+```bash
+# update a DNS record
+curl https://localhost:65443/api/ddns \
+  -X POST \
+  --cacert certs/ca/my-root-ca.crt.pem \
+  -u admin:secret \
+  -H 'Content-Type: application/json' \
+  -d '{ "name": "example.com"
+      , "value": "127.0.0.1"
+      , "type": "A"
+      }'
+  
+# test that the record was updated
+dig -p 65053 @localhost example.com A
+```
 
-DNS API
-========
-
-DNS API are public API to manage the domains.
-Management API is HTTP, RESTful, API on port 80.
-
-Perform Update
---------
-
-The update API is a REST-based system.
+**via GET**
 
 ```
-/nic/update?hostname=yourhostname&myip=ipaddress
+/nic/update?name=example.com&type=A&value=127.0.0.1
 ```
 
 IP Address Resolve
 --------
 
 The resolve API refers RFC 1035.
-
-
 
 License
 ========

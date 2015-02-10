@@ -1,6 +1,6 @@
 {
   "name": "ddns",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Dynamic DNS Server",
   "main": "index.js",
   "bin": "./bin/node-dyndns",
@@ -8,10 +8,12 @@
     "test": "echo ERROR no tests; exit 1"
   },
   "dependencies": {
-    "native-dns": "*",
-    "express": "*",
+    "bluebird": "^2.9.7",
+    "body-parser": "^1.11.0",
+    "check-ip-address": "^1.0.0",
     "ejs": "*",
-    "bluebird": "^2.9.7"
+    "express": "*",
+    "native-dns": "*"
   },
   "devDependencies": {},
   "repository": {
