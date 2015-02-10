@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 'use strict';
 
-var dyndns = require('../index');
-var options;
+var dyndns = require('../index')
+  , domainstore = require('../lib/domainstore')
+  , options
+  ; 
 
 options = {
   dns_host: '0.0.0.0'
 , dns_port: process.argv[2] || 53
 , http_host: '127.0.0.1'
 , http_port: process.argv[3] || 3000
-}
+, store: new domainstore.DomainStore()
+};
 
 dyndns.start(options);
 console.log('http', options.http_port);
