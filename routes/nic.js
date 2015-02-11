@@ -49,22 +49,16 @@ exports.create = function (store) {
     domain = {
       name : query.key || query.name || query.hostname
     , type: query.type || 'A' //dns.consts.NAME_TO_QTYPE[query.type || 'A'],
-    , values : [ query.value || query.myip ]
+    , values : [ query.value || query.myip || req.connection.remoteAddress ]
     , ttl : 300
     };
 
     store.registerAnswer(domain, function(err) {
-
       if (err) {
-        res.writeHead(500, {
-          'Content-Type' : 'text/plain'
-        });
-        res.end(err);
+        // TODO should differentiate between bad user data and server failure
+        res.status(500).send({ error: { message: err.message || err.toString() } });
       } else {
-        res.writeHead(200, {
-          'Content-Type' : 'text/plain'
-        });
-        res.end('good ' + query.value);
+        res.send(domain);
       }
     });
   };
