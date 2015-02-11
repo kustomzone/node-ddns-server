@@ -40,16 +40,24 @@
     <h2>Domain</h2>
     <table class="table">
       <tr>
-        <th>Name</th>
-        <th>Address</th>
+        <th>Type</th>
+        <th>Key</th>
+        <th>Value</th>
       </tr>
       <% for (index in domains) { %>
       <tr>
           <td>
+            <%= domains[index].type %>
+          </td>
+          <td>
             <a href="http://<%= domains[index].name %>/"><%= domains[index].name %></a>
           </td>
           <td>
-            <%= domains[index].address %>
+            <ul>
+            <% for (i in domains[index].values) { %>
+              <li><%= domains[index].values[i] %></li>
+            <% } %>
+            </ul>
           </td>
       </tr>
       <% } %>
