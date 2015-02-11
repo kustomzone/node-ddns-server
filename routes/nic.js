@@ -31,7 +31,9 @@ exports.create = function (store) {
 
     query.key = query.key || query.name || query.hostname;
     query.name = query.key;
-    query.value = query.value || query.address || query.ip || query.myip;
+    query.value = query.value || query.address || query.ip || query.myip
+      || req.connection.remoteAddress
+      ;
     query.ttl = query.ttl && parseInt(query.ttl, 10) || 300;
     if (!query.type) {
       query.type = 'A';
@@ -49,7 +51,7 @@ exports.create = function (store) {
     domain = {
       name : query.key || query.name || query.hostname
     , type: query.type || 'A' //dns.consts.NAME_TO_QTYPE[query.type || 'A'],
-    , values : [ query.value || query.myip || req.connection.remoteAddress ]
+    , values : [ query.value || query.myip ]
     , ttl : 300
     };
 
