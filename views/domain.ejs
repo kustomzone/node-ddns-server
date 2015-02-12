@@ -41,6 +41,7 @@
     <table class="table">
       <tr>
         <th>Type</th>
+        <th>TTL</th>
         <th>Key</th>
         <th>Value</th>
       </tr>
@@ -48,6 +49,9 @@
       <tr>
           <td>
             <%= domains[index].type %>
+          </td>
+          <td>
+            <%= domains[index].ttl %>
           </td>
           <td>
             <a href="http://<%= domains[index].name %>/"><%= domains[index].name %></a>

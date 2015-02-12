@@ -52,7 +52,7 @@ exports.create = function (store) {
       name : query.key || query.name || query.hostname
     , type: query.type || 'A' //dns.consts.NAME_TO_QTYPE[query.type || 'A'],
     , values : [ query.value || query.myip ]
-    , ttl : 300
+    , ttl : query.ttl
     };
 
     store.registerAnswer(domain, function(err) {
