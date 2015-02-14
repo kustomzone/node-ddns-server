@@ -24,10 +24,12 @@ curl https://localhost:65443/api/ddns \
   --cacert certs/ca/my-root-ca.crt.pem \
   -u admin:secret \
   -H 'Content-Type: application/json' \
-  -d '{ "name": "example.com"
-      , "value": "127.0.0.1"
-      , "type": "A"
-      }'
+  -d '[
+        { "name": "example.com"
+        , "value": "127.0.0.1"
+        , "type": "A"
+        }
+      ]'
   
 # test that the record was updated
 dig -p 65053 @localhost example.com A

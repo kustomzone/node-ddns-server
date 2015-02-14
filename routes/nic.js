@@ -22,47 +22,90 @@ exports.create = function (store) {
   api.update = function (req, res) {
     var query
       , domain
+      , updates
+      , update
+      , err
       ;
 
     query = url.parse(req.url, true).query;
-    if (!(query.key || query.name || query.hostname)) {
-      query = req.body || {};
+    if (query.key || query.name || query.hostname) {
+      update = query;
+      updates = [query];
+    }
+    if (Array.isArray(req.body)) {
+      update = null;
+      updates = req.body;
     }
 
-    query.key = query.key || query.name || query.hostname;
-    query.name = query.key;
-    query.value = query.value || query.address || query.ip || query.myip
-      || req.connection.remoteAddress
-      ;
-    query.ttl = query.ttl && parseInt(query.ttl, 10) || 300;
-    if (!query.type) {
-      query.type = 'A';
-    }
-    if (!dns.consts.NAME_TO_QTYPE[query.type.toString().toUpperCase()]) {
-      res.send({ error: { message: "unrecognized type '" + query.type + "'" } });
+    if (!updates || !updates.length) {
+      console.error(query);
+      console.error(req.body);
+      res.send({ error: { message:
+        'usage: POST [{ "name": "example.com", "value": "127.0.0.1", "ttl": 300, "type": "A" }]'
+      } });
       return;
     }
 
-    if (!query.key || !query.value) {
-      res.send({ error: { message: "missing key (hostname) and or value (ip)" } });
-      return;
-    }
-
-    domain = {
-      name : query.key || query.name || query.hostname
-    , type: query.type || 'A' //dns.consts.NAME_TO_QTYPE[query.type || 'A'],
-    , values : [ query.value || query.myip ]
-    , ttl : query.ttl
-    };
-
-    store.registerAnswer(domain, function(err) {
-      if (err) {
-        // TODO should differentiate between bad user data and server failure
-        res.status(500).send({ error: { message: err.message || err.toString() } });
-      } else {
-        res.send(domain);
+    if (!updates.every(function (update, i) {
+      if (!update.type) {
+        update.type = 'A';
       }
-    });
+      update.host = update.host || update.key || update.name || update.hostname;
+      update.answer = update.answer || update.value || update.address || update.ip || update.myip
+        || req.connection.remoteAddress
+        ;
+      update.answers = Array.isArray(update.answers) && update.answers || [update.answer];
+      if (update.ttl) {
+        update.ttl = parseInt(update.ttl, 10);
+      }
+      if (!update.ttl) {
+        update.ttl = 300;
+      }
+      // TODO update.priority
+
+
+      if (!dns.consts.NAME_TO_QTYPE[update.type.toString().toUpperCase()]) {
+        err = { error: { message: "unrecognized type '" + update.type + "'" } };
+        return false;
+      }
+
+      if (!update.answer) {
+        err = { error: { message: "missing key (hostname) and or value (ip)" } };
+        return false;
+      }
+
+      domain = {
+        host : update.host
+      , name : update.host
+      , type: update.type || 'A' //dns.consts.NAME_TO_QTYPE[update.type || 'A'],
+      , values : update.answers
+      , answers : update.answers
+      , ttl : update.ttl
+      , priority: update.priority
+      };
+      updates[i] = {
+        type: domain.type
+      , host: domain.host
+      , answers: domain.answers
+      , ttl: domain.ttl
+      , priority: domain.priority
+      };
+
+      store.registerAnswer(domain, function (err) {
+        if (err) {
+          // TODO should differentiate between bad user data and server failure
+          res.status(500).send({ error: { message: err.message || err.toString() } });
+        } else {
+        }
+      });
+
+      return true;
+    })) {
+      res.status(500).send(err);
+      return;
+    }
+
+    res.send(update || updates);
   };
 
   return api;
