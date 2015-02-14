@@ -24,6 +24,7 @@ var https = require('https')
 dnsd = new (dnsserver.DynDnsServer)(store, {
   host: '0.0.0.0'
 , port: dnsPort 
+, primaryNameserver: 'ns1.redirect-www.org'
 });
 dnsd.start();
 
@@ -43,7 +44,7 @@ options = {
 // Serve an Express App securely with HTTPS
 //
 server = https.createServer(options);
-checkip.getExternalIp().then(function (ip) {
+checkip.getExternalIp().catch(function (err) { console.error(err); }).then(function (ip) {
   function listen(app) {
     server.on('request', app);
     server.listen(port, function () {
