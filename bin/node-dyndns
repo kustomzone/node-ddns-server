@@ -24,7 +24,8 @@ var https = require('https')
 dnsd = new (dnsserver.DynDnsServer)(store, {
   host: '0.0.0.0'
 , port: dnsPort 
-, primaryNameserver: 'ns1.redirect-www.org'
+, primaryNameserver: require('../config').primaryNameserver
+, nameservers: require('../config').nameservers
 });
 dnsd.start();
 

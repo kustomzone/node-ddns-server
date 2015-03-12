@@ -4,7 +4,6 @@
 , "globals": { "angular": true }
 
 , "indent": 2
-, "onevar": true
 , "laxcomma": true
 , "laxbreak": true
 , "curly": true
