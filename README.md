@@ -11,6 +11,10 @@ pushd node-ddns
 
 echo '{}' > dns.db.json
 
+# edit config.example.json with nameserver information
+rsync -av config.example.json config.json
+vim config.json
+
 # node bin/node-dyndns <<dns port>> <<https port>>
 node bin/node-dyndns 65053 65443
 ```
