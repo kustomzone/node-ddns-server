@@ -10,10 +10,14 @@
   "dependencies": {
     "bluebird": "^2.9.7",
     "body-parser": "^1.11.0",
-    "check-ip-address": "^1.0.0",
+    "check-ip-address": "^1.1.0",
+    "dom-storage": "^2.0.1",
     "ejs": "*",
     "express": "*",
-    "native-dns": "*"
+    "express-jwt": "^3.0.1",
+    "jsonwebtoken": "^5.0.2",
+    "native-dns": "*",
+    "ursa": "^0.8.5"
   },
   "devDependencies": {},
   "repository": {

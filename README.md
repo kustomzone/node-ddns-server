@@ -22,12 +22,22 @@ node bin/node-dyndns 65053 65443
 Test that it works
 
 ```bash
+# generate a JWT allowing any and all domain updates
+# (the second argument is the test parameter, which must be set to a matching domain)
+node lib/cn-auth '*' 'example.com'
+
+# generate a JWT allowing only *.example.com and example.com
+# (the second argument is the test parameter, which must be set to a matching domain)
+node lib/cn-auth '*.example.com' 'bar.foo.example.com'
+```
+
+```bash
 # update a DNS record
 curl https://localhost:65443/api/ddns \
   -X POST \
   --cacert certs/ca/my-root-ca.crt.pem \
-  -u admin:secret \
-  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer '$JWT \
+  -H 'Content-Type: application/json; charset=utf-8' \
   -d '[
         { "name": "example.com"
         , "value": "127.0.0.1"
