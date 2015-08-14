@@ -12,10 +12,10 @@ exports.create = function (store) {
 
   /**
    * Update a domain.
-   * 
+   *
    * Request query should have `hostname` and `myip`. Those values are stored into DomainStore.
    * If these values are invalid, it returns `nochg`.
-   * 
+   *
    * @param req {Request} HTTP request
    * @param res {Response} HTTP request
    */
@@ -51,6 +51,9 @@ exports.create = function (store) {
         update.type = 'A';
       }
       update.host = update.host || update.key || update.name || update.hostname;
+
+      // TODO BUG XXX must test if address is ipv4 or ipv6
+      // (my comcast connection is ipv6)
       update.answer = update.answer || update.value || update.address || update.ip || update.myip
         || req.connection.remoteAddress
         ;
