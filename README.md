@@ -1,3 +1,12 @@
+new version is on the way
+================
+
+**Update: Nov 30 2015**
+
+I'm running a much more robust and well-developed version of this ddns server that is just waiting to be commited here.
+
+Just too tired tonight to finish the updates...
+
 node-ddns
 ======
 
