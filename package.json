@@ -1,10 +1,13 @@
 {
-  "name": "ddns",
-  "version": "2.0.0",
+  "name": "ddns-server",
+  "version": "1.0.0",
   "description": "A Dynamic DNS API server and Nameserver and Web Interface",
   "main": "index.js",
   "dependencies": {
     "bluebird": "^3.4.1",
+    "ddns-rest": "^1.0.0",
+    "ddns-nameserver": "^1.0.0",
+    "ddns-webapp": "^1.0.0",
     "express": "^4.14.0",
     "native-dns": "^0.7.0",
     "rsa-compat": "^1.2.7",
