@@ -1,4 +1,4 @@
-ddns (node.js)
+ddns
 ====
 
 A Dynamic DNS (DDNS / DynDNS) server written in node.js.
