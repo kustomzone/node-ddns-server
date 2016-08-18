@@ -1,6 +1,6 @@
 | [ddnsd](https://github.com/coolaj86/ddnsd) | [ddns-server](https://github.com/Daplie/node-ddns-server) | [ddns-client](https://github.com/Daplie/node-ddns-client) |
 
-ddns
+ddns-server
 ====
 
 A Dynamic DNS (DDNS / DynDNS) server written in node.js.
