@@ -29,6 +29,26 @@ git clone git@github.com:Daplie/node-ddns-frontend.git ddns-frontend
 #npm install ddns-frontend
 ```
 
+Usage
+-----
+
+Here's how to create your own nameserver and ddns api using only the default plugins.
+
+```
+'use strict';
+
+require('ddns-server').create({
+  dnsPort: 53
+, httpPort: 80
+, filepath: path.join(require('os').homedir(), '.ddnsd.sqlite3')
+, primaryNameserver: 'ns1.example.com'
+, nameservers: [
+    { name: 'ns1.example.com', ipv4: '192.168.1.101' }
+  , { name: 'ns2.example.com', ipv4: '192.168.1.102' }
+  ]
+}).listen();
+```
+
 Walkthrough
 -----------
 
