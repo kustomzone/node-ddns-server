@@ -6,80 +6,121 @@ var app = require('express')();
 var RSA = PromiseA.promisifyAll(require('rsa-compat').RSA);
 var ndns = require('native-dns');
 var serveStatic = require('serve-static');
+var jsonParser = require('body-parser').json;
 
-var privkeyPath = path.join(__dirname, 'privkey.pem');
-var store = require('ddns-api/store').create({
-  filepath: path.join(__dirname, 'db.sqlite3')
-});
-
-RSA.getKeypairAsync = function (filepath, bitlen, exp, options) {
-	var PromiseA = require('bluebird');
-	var fs = PromiseA.promisifyAll(require('fs'));
-
-	return fs.readFileAsync(filepath, 'ascii').then(function (pem) {
-		return RSA.import({ privateKeyPem: pem }, options);
-	}, function (/*err*/) {
-		return RSA.generateKeypairAsync(bitlen, exp, options, function (err, keypair) {
-			return fs.writeFileAsync(filepath, keypair.privateKeyPem, 'ascii').then(function () {
-				return keypair;
-			});
-		});
-	});
+var defaults = {
+  dnsPort: 53
+, dnsTcpPort: 53
+, httpPort: 80
+, httpsPort: 443
+, filepath: path.join(require('os').homedir(), '.ddnsd.sqlite3')
+, prefix: '/api/com.daplie.ddns'
+, primaryNameserver: 'ns1.example.com'
+, nameservers: [
+    { name: 'ns1.example.com', ipv4: '192.168.1.101' }
+  //, { name: 'ns2.example.com', ipv4: '192.168.1.102' }
+  ]
+//, quikPort: 443
 };
 
-var bitlen = 1024;
-var exp = 65537;
-var options = { public: true, pem: true, internal: true };
-var port = 53;
-var address4 = '0.0.0.0';
+module.exports.create = function (opts) {
+  var privkeyPath = path.join(__dirname, 'privkey.pem');
 
-RSA.getKeypairAsync(privkeyPath, bitlen, exp, options).then(function (keypair) {
-  console.log('hello');
+  RSA.getKeypairAsync = function (filepath, bitlen, exp, options) {
+    var PromiseA = require('bluebird');
+    var fs = PromiseA.promisifyAll(require('fs'));
 
-	require('ddns-api').create({
-		keypair: { publicKeyPem: RSA.exportPublicPem(keypair) }
-	, store: store
-	, prefix: '/api/com.daplie.ddns'
-	, app: app
-	});
+    return fs.readFileAsync(filepath, 'ascii').then(function (pem) {
+      return RSA.import({ privateKeyPem: pem }, options);
+    }, function (/*err*/) {
+      return RSA.generateKeypairAsync(bitlen, exp, options, function (err, keypair) {
+        return fs.writeFileAsync(filepath, keypair.privateKeyPem, 'ascii').then(function () {
+          return keypair;
+        });
+      });
+    });
+  };
 
-	app.use('/', serveStatic(require('ddns-frontend').path));
+  var bitlen = 2048;
+  var exp = 65537;
+  var options = { public: true, pem: true, internal: true };
+  var port = opts.dnsPort;
+  var address4 = '0.0.0.0';
 
-	var plainPort = 80;
-	require('http').createServer(app).listen(plainPort, function () {
-		console.info('Daplie DDNS RESTful API listening on port', plainPort);
-	});
+  return {
+    listen: function () {
+      var checkip = require('check-ip-address');
+      var service = 'https://api.ipify.org'; // default
+        //var service = 'https://coolaj86.com/services/whatsmyip'; // another option
+        //
+      return checkip.getExternalIp(service).then(function (ip) {
+        if (!ip) {
+          console.warn('');
+          console.warn('');
+          console.warn(require('os').networkInterfaces());
+          console.warn('');
+          throw new Error('no public ip address is available to listen on');
+        }
+        defaults.nameservers[0].name = opts.primaryNameserver;
+        defaults.nameservers[0].ipv4 = ip;
 
-  var getAnswerList = require('ddns-nameserver/query').create({
-    store: store
-  }).getAnswerList;
+        return RSA.getKeypairAsync(privkeyPath, bitlen, exp, options).then(function (keypair) {
+          require('ddns-rest/store').create({
+            filepath: opts.filepath
+          }).then(function (store) {
 
-  var ns = require('ddns-nameserver').create({
-    store: store
-  , primaryNameserver: 'ns1.example.com'
-  , nameservers: [
-      { name: 'ns1.example.com', ipv4: '192.168.1.101' }
-    , { name: 'ns2.example.com', ipv4: '192.168.1.102' }
-    ]
-  , getAnswerList: getAnswerList
-  });
+            app.use('/api', jsonParser());
 
-  var udpDns = ndns.createServer();
-  var tcpDns = ndns.createTCPServer();
+            require('ddns-rest').create({
+              keypair: { publicKeyPem: RSA.exportPublicPem(keypair) }
+            , store: store
+            , prefix: opts.prefix
+            , app: app
+            });
 
-  udpDns.on('error', ns.onError);
-  udpDns.on('socketError', ns.onSocketError);
-  udpDns.on('request', ns.onRequest);
-  udpDns.on('listening', function () {
-    console.info('DNS Server running on udp port', port);
-  });
-  udpDns.serve(port, address4);
+            app.use('/', serveStatic(require('ddns-webapp').path));
 
-  tcpDns.on('error', ns.onError);
-  tcpDns.on('socketError', ns.onSocketError);
-  tcpDns.on('request', ns.onRequest);
-  tcpDns.on('listening', function () {
-    console.info('DNS Server running on tcp port', port);
-  });
-  tcpDns.serve(port, address4);
-});
+            var plainPort = opts.httpPort;
+            require('http').createServer(app).listen(plainPort, function () {
+              console.info('Daplie DDNS RESTful API listening on port', plainPort);
+            });
+
+            var getAnswerList = require('ddns-nameserver/query').create({
+              store: store
+            }).getAnswerList;
+
+            var ns = require('ddns-nameserver').create({
+              store: store
+            , primaryNameserver: opts.primaryNameserver
+            , nameservers: opts.nameservers
+            , getAnswerList: getAnswerList
+            });
+
+            var udpDns = ndns.createServer();
+            var tcpDns = ndns.createTCPServer();
+
+            udpDns.on('error', ns.onError);
+            udpDns.on('socketError', ns.onSocketError);
+            udpDns.on('request', ns.onRequest);
+            udpDns.on('listening', function () {
+              console.info('DNS Server running on udp port', port);
+            });
+            udpDns.serve(port, address4);
+
+            tcpDns.on('error', ns.onError);
+            tcpDns.on('socketError', ns.onSocketError);
+            tcpDns.on('request', ns.onRequest);
+            tcpDns.on('listening', function () {
+              console.info('DNS Server running on tcp port', port);
+            });
+            tcpDns.serve(port, address4);
+          });
+        });
+      });
+    }
+  };
+};
+
+if (require.main === module) {
+  module.exports.create(defaults).listen();
+}

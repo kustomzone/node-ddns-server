@@ -1,6 +1,7 @@
-dns.db.json
-dns.db.*.json
-config.json
+*.pem
+*.key
+*.sqlite*
+*.jwt
 
 # Logs
 logs
