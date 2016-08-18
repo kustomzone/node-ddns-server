@@ -18,20 +18,21 @@ This module consists of 3 plugins:
 * [ddns-nameserver](https://github.com/Daplie/ddns-nameserver) (nameserver implementation, typically udp/tcp ports 53)
 * [ddns-webapp](https://github.com/Daplie/ddns-webapp) (web interface, typically https port 443)
 
-For the command line server see [ddnsd](https://github.com/coolaj86/ddnsd)
-
 Install
 -------
 
+**Commandline**
+
+See [ddnsd](https://github.com/coolaj86/ddnsd)
+and [ddns](https://github.com/Daplie/ddns-client)
+
 **Casual**
 
-```
-# Commandline
-npm install --global ddnsd
-
-# Library (with default plugins)
+```bash
+# Core Library
 npm install --save ddns-server
 
+# Default Plugins
 npm install --save ddns-rest
 npm install --save ddns-nameserver
 npm install --save ddns-webapp
@@ -54,7 +55,7 @@ Usage
 
 Here's how to create your own nameserver and ddns api using only the default plugins.
 
-```
+```javascript
 'use strict';
 
 require('ddns-server').create({
