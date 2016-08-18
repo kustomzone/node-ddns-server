@@ -11,9 +11,11 @@
     "ddns-rest": "^1.0.0",
     "ddns-webapp": "^1.0.0",
     "express": "^4.14.0",
+    "masterquest-sqlite3": "^1.0.3",
     "native-dns": "^0.7.0",
     "rsa-compat": "^1.2.7",
-    "serve-static": "^1.11.1"
+    "serve-static": "^1.11.1",
+    "sqlite3": "^3.1.4"
   },
   "devDependencies": {},
   "scripts": {
