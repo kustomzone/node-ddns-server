@@ -8,9 +8,18 @@ Install
 
 ```bash
 git clone git@github.com:Daplie/node-ddns.git
-pushd node-ddns
+pushd node-ddns/
 
-npm install
+mkdir node_modules/
+pushd node_modules/
+
+git clone git@github.com:Daplie/node-ddns-server.git ddns-api
+git clone git@github.com:Daplie/node-ddns-server.git ddns-nameserver
+git clone git@github.com:Daplie/node-ddns-frontend.git ddns-frontend
+
+#npm install ddns-api
+#npm install ddns-nameserver
+#npm install ddns-frontend
 ```
 
 Usage

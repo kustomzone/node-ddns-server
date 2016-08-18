@@ -1,0 +1,33 @@
+{
+  "name": "ddns",
+  "version": "2.0.0",
+  "description": "A Dynamic DNS API server and Nameserver and Web Interface",
+  "main": "index.js",
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "express": "^4.14.0",
+    "native-dns": "^0.7.0",
+    "rsa-compat": "^1.2.7",
+    "serve-static": "^1.11.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Daplie/node-ddns.git"
+  },
+  "keywords": [
+    "ddns",
+    "dns",
+    "daplie",
+    "dynamic"
+  ],
+  "author": "AJ ONeal <coolaj86@gmail.com> (https://coolaj86.com/)",
+  "license": "(MIT OR Apache-2.0)",
+  "bugs": {
+    "url": "https://github.com/Daplie/node-ddns/issues"
+  },
+  "homepage": "https://github.com/Daplie/node-ddns#readme"
+}
