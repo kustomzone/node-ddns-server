@@ -29,8 +29,12 @@ Install
 # Commandline
 npm install --global ddnsd
 
-# Library
+# Library (with default plugins)
 npm install --save ddns-server
+
+npm install --save ddns-rest
+npm install --save ddns-nameserver
+npm install --save ddns-webapp
 ```
 
 **For Development**
@@ -38,11 +42,6 @@ npm install --save ddns-server
 ```bash
 git clone git@github.com:Daplie/node-ddns.git
 pushd node-ddns/
-
-# These are not published yet
-#npm install ddns-rest
-#npm install ddns-nameserver
-#npm install ddns-webapp
 
 mkdir node_modules/
 git clone git@github.com:Daplie/ddns-rest.git node_modules/ddns-rest
