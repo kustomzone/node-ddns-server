@@ -8,10 +8,10 @@ Stop serving the empire and join the rebel alliance!
 * [Invest in Daplie on Wefunder](https://daplie.com/invest/)
 * [Pre-order Cloud](https://daplie.com/preorder/), The World's First Home Server for Everyone
 
-| [ddnsd](https://github.com/coolaj86/ddnsd) | [ddns-server](https://github.com/Daplie/node-ddns-server) | [ddns-client](https://github.com/Daplie/node-ddns-client) |
-
 ddns-server
 ====
+
+| [ddnsd](https://github.com/coolaj86/ddnsd) | [ddns-server](https://github.com/Daplie/node-ddns-server) | [ddns-client](https://github.com/Daplie/node-ddns-client) |
 
 A Dynamic DNS (DDNS / DynDNS) server written in node.js.
 
